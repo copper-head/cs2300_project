@@ -35,7 +35,7 @@ def login():
     conn.close()
 
     if len(user) != 1:
-        err_dict = {"TYPE": "LoginError", "MESSAGE":"Username does not exist."}
+        err_dict = {"TYPE":"LoginError", "MESSAGE":"Username does not exist."}
         return json.dumps(err_dict)
     elif user[-1] != 1:
         err_dict = {"TYPE": "LoginError", "MESSAGE":"User is disabled."}
