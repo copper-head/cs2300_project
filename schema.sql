@@ -54,3 +54,13 @@ CREATE TABLE applications
     FOREIGN KEY (auditor_id) REFERENCES review_staff(user_id),
     FOREIGN KEY (applicant_id) REFERENCES applicants(user_id)
 );
+
+-- ================== TOKEN SCHEMA ==================== --
+
+CREATE TABLE session_tokens 
+(
+    user_id INT NOT NULL,
+    token TEXT NOT NULL,
+    expiration_time TEXT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
