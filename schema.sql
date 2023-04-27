@@ -2,7 +2,6 @@
 
 CREATE TABLE users
 (
-    id INTEGER UNIQUE PRIMARY KEY,
     user_name TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
     password_salt TEXT NOT NULL,
