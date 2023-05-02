@@ -121,51 +121,75 @@ def applicant_create_user():
     return json.dumps({"TYPE":"AccountCreated", "MESSAGE":"Account creation successful."})
 
 
-# No Authentication Required
-@app.route('/api/fetch/welfare_programs', methods=['POST'])
-def get_welfare_programs():
-    
+
+
+# Requires Authentication
+@app.route('/api/applicant/submit_application')
+def post_welfare_app():
+
     username = request.json["username"]
     token = request.json["token"]
-
-    auth_status, message = authenticate(username, token)
-
-    if not auth_status:
-        return message
     
-    conn = sq.connect(DB_FILE)
+    # Authenticate and throw an error if token is invalid.
+    auth, message = authenticate(username, token)
+    if not auth:
+        return message
+
+    conn = sq.connect("database.db")
     curs = conn.cursor()
 
-    prog_q = curs.execute("SELECT * FROM welfare_programs")
-    progs = prog_q.fetchall()
+    curs.execute("SELECT id FROM users WHERE user_name=?", (username,))
+    user_id = curs.fetchone()[0]
 
-    payload = {
-        "TYPE":"Success",
-        "MESSAGE":"Success",
-        "payload": str(progs)
-    }
+    values = (
+        user_id,
+        requests.json["birthdate"],
+        requests.json["firstname"],
+        requests.json["lastname"],
+        requests.json["address"]
+    )
 
+    curs.execute("INSERT INTO applicantions VALUES()", values)
+    conn.commit()
     conn.close()
 
-    return json.dumps(payload)
-
-
 
 
 # Requires Authentication
-@app.route('/api/post/welfare_app')
-def post_welfare_app():
-    pass
-
-
-# Requires Authentication
-@app.route('/api/get/welfare_app')
+@app.route('/api/applicant/view_applications')
 def get_welfare_app():
     pass
+    
+
 
 ### ==================== REVIEW STAFF ROUTES ==================== ###
 
 # Login
+
+
+
+
+### ======== NO AUTHENTICAITON REQUIRED ========= ###
+
+@app.route('/api/get/welfare_programs')
+def get_welfare_programs():
+    
+    ### FETCH DATA ###
+    conn = sq.connect(DB_FILE)
+    curs = conn.cursor()
+    prog_q = curs.execute("SELECT * FROM welfare_programs")
+    progs = prog_q.fetchall()
+    conn.close()
+
+    # Encapsulate data and send.
+    payload = {
+        "type":"Success",
+        "message":"Success",
+        "payload": str(progs)
+    }
+
+    return json.dumps(payload)
+
 
 def authenticate(user_name, token):
 
@@ -178,7 +202,7 @@ def authenticate(user_name, token):
     now = datetime.now()
 
     if len(token_dates) == 0:
-        return (False, json.dumps({"TYPE":"AuthenticationError", "MESSAGE":"Invalid Token."}))
+        return False, json.dumps({"TYPE":"AuthenticationError", "MESSAGE":"Invalid Token."})
     
     user_query = curs.execute("SELECT id FROM users WHERE user_name=?", (user_name,))
     conn.close()
@@ -186,9 +210,9 @@ def authenticate(user_name, token):
     token_exp = datetime.strptime(token_dates[0][0], '%m/%d/%y %H:%M:%S')
 
     if now > token_exp:
-        return (False, json.dumps({"TYPE":"AuthenticationError", "MESSAGE":"Session Token Expired."}))
+        return False, json.dumps({"TYPE":"AuthenticationError", "MESSAGE":"Session Token Expired."})
     else:
-        return (True, json.dumps({"TYPE":"AuthenticationSuccess", "MESSAGE":"Token Verified."}))
+        return True, json.dumps({"TYPE":"AuthenticationSuccess", "MESSAGE":"Token Verified."})
 
 if __name__ == "__main__":
     app.run(debug=True)

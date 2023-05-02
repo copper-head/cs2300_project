@@ -11,6 +11,7 @@ CREATE TABLE users
 
 CREATE TABLE applicants 
 (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INT UNIQUE,
     birth_date TEXT,
     first_name TEXT,
@@ -39,13 +40,12 @@ CREATE TABLE welfare_programs
 (
     name TEXT UNIQUE,
     plan_type TEXT,
-    availabe_plans TEXT,
-    is_available
+    is_available INT DEFAULT 1
 );
 
 CREATE TABLE applications 
 (
-    applicant_id TEXT UNIQUE,
+    applicant_id INT NOT NULL,
     welfare_program_id TEXT NOT NULL,
     ly_income REAL DEFAULT 0,
     has_disability INT DEFAULT 0,
@@ -53,7 +53,7 @@ CREATE TABLE applications
     review_status TEXT NOT NULL,
     auditor_id TEXT NOT NULL,
     FOREIGN KEY (auditor_id) REFERENCES review_staff(user_id),
-    FOREIGN KEY (applicant_id) REFERENCES applicants(user_id)
+    FOREIGN KEY (applicant_id) REFERENCES applicants(id)
 );
 
 -- ================== TOKEN SCHEMA ==================== --

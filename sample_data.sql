@@ -1,0 +1,4 @@
+
+-- WELFARE PROGRAM SAMPLE DATA --
+INSERT INTO welfare_programs VALUES("MOAR FOOD", "FOOD", "1,2,3");
+INSERT INTO welfare_programs VALUES("BLING BLING", "FINANCIAL", "1,2,3");
