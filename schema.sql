@@ -22,6 +22,7 @@ CREATE TABLE applicants
 
 CREATE TABLE review_staff 
 (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INT UNIQUE,
     first_name TEXT,
     last_name TEXT,
@@ -45,13 +46,15 @@ CREATE TABLE welfare_programs
 
 CREATE TABLE applications 
 (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     applicant_id INT NOT NULL,
-    welfare_program_id TEXT NOT NULL,
+    submission_date TEXT NOT NULL,
+    welfare_program TEXT NOT NULL,
     ly_income REAL DEFAULT 0,
     has_disability INT DEFAULT 0,
     reliability_points INT NOT NULL,
-    review_status TEXT NOT NULL,
-    auditor_id TEXT NOT NULL,
+    review_status TEXT NOT NULL DEFAULT "unreviewed",
+    auditor_id INT,
     FOREIGN KEY (auditor_id) REFERENCES review_staff(user_id),
     FOREIGN KEY (applicant_id) REFERENCES applicants(id)
 );
@@ -59,6 +62,14 @@ CREATE TABLE applications
 -- ================== TOKEN SCHEMA ==================== --
 
 CREATE TABLE session_tokens 
+(
+    user_id INT NOT NULL,
+    token TEXT NOT NULL,
+    expiration_time TEXT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE staff_tokens 
 (
     user_id INT NOT NULL,
     token TEXT NOT NULL,
