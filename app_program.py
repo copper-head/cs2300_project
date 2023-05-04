@@ -87,7 +87,35 @@ def create_account():
 
 
 def main_menu():
-    pass
+    
+    exit = False
+    while not input_valid:
+
+        print("Select an action: ")
+        print("1 - View Welfare Porgrams")
+        print("2 - View Submitted Applications")
+        print("3 - Submit New Application")
+        print("4 - Exit")
+
+        user_input = input()
+        print()
+
+        if user_input == "1":
+            view_welfare_programs()
+        elif user_input == "2":
+            view_submitted_applications()
+        elif user_input == "3":
+            submit_new_application()
+        elif user_input == "4":
+            print("GOODBYE!")
+            exit()
+        else:
+            print("Invalid Input")
+
+
+
+
+            
 
 def view_welfare_programs():
     pass
