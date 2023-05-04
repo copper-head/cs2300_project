@@ -267,6 +267,30 @@ def staff_view_application():
 
     return json.dumps({"TYPE":"ApplicationViewSuccess","MESSAGE":"Application Pulled Successfully.","data":app_data[0]})
 
+@app.route("/api/staff/view_unreviewed_applications", methods=['POST'])
+def staff_view_application():
+
+    username = request.json["username"]
+    token = request.json["token"]
+    
+    # Authenticate and throw an error if token is invalid.
+    auth, message = staff_authenticate(username, token)
+    if not auth:
+        return message
+
+    conn = sq.connect(DB_FILE)
+    curs = conn.cursor()
+
+    curs.execute("SELECT * FROM applications WHERE review_status='unreviewed'")
+    app_data = curs.fetchall()
+
+    if len(app_data) == 0:
+        return json.dumps({"TYPE":"ApplicationViewWarning","MESSAGE":"No applications to review."})
+
+    conn.close()
+
+    return json.dumps({"TYPE":"ApplicationViewSuccess","MESSAGE":"Applications Pulled Successfully.","data":app_data[0]})
+
 
 @app.route('/api/staff/submit_app_review', methods=['POST'])
 def submit_app_review():
