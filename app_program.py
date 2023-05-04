@@ -6,7 +6,7 @@ API_BASE_URL = "http://localhost:5000"
 head = {"Content-Type":"application/json"}
 
 user_token = None
-username = None
+g_user_name = None
 first_name = None
 last_name = None
 
@@ -47,6 +47,9 @@ def login():
             print(response_info["MESSAGE"])
         elif response_info["TYPE"] == "LoginSuccess":
             print("\nLogin Successful!")
+            global user_token
+            global g_user_name
+            g_user_name = username
             user_token = response_info["TOKEN"]
             input_valid = True
             main_menu()
@@ -143,19 +146,12 @@ def view_welfare_programs():
 
 def view_submitted_applications():
 
-    url = "http://localhost:5000/api/applicant/view_applications"
-
-    payload = json.dumps({
-        "username": username,
-        "token": user_token
-        })
-    headers = head
-    response = requests.request("POST", url, headers=headers, data=payload)
+    url = API_BASE_URL + "/api/applicant/view_applications"
+    print(user_token)
+    payload = json.dumps({"username": g_user_name,"token": user_token})
+    response = requests.request("POST", url, headers=head, data=payload)
     print(type(response.text))
     print(response.text)
-
-    #FIXME, print the stuff
-    pass
 
 def submit_new_application():
     appName = ''
