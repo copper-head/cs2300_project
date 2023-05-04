@@ -124,18 +124,18 @@ def main_menu():
             
 
 def view_welfare_programs():
-    print('Press Enter to exit to the menu')
+    print('Press Enter to exit to the menu\n')
 
     url = "http://localhost:5000/api/get/welfare_programs"
     response = requests.request("GET", url, headers=head)
    
     welfares = json.loads(response.text)
-    print('Name\t\tPlan Type')
+    print('{:<20}'.format('Name')+'{:<20}'.format('Type') + 'Available Tiers')
+    print('{:-<55}'.format('-'))
     for i in welfares["payload"]:
-        print()
         for j  in i:
-            if(j != '1, 2, 3'):
-                print(j, end='\t')
+                print('{:<20}'.format(j), end='')
+        print()
 
     input()
     main_menu()
