@@ -142,8 +142,19 @@ def view_welfare_programs():
 
 
 def view_submitted_applications():
-    #very similar to view_welfare_program
-    #just use the right url and format to include the app no.
+
+    url = "http://localhost:5000/api/applicant/view_applications"
+
+    payload = json.dumps({
+        "username": username,
+        "token": user_token
+        })
+    headers = head
+    response = requests.request("POST", url, headers=headers, data=payload)
+    print(type(response.text))
+    print(response.text)
+
+    #FIXME, print the stuff
     pass
 
 def submit_new_application():
