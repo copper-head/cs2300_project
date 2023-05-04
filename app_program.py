@@ -121,15 +121,11 @@ def main_menu():
         else:
             print("Invalid Input")
 
-
-
-
             
-
 def view_welfare_programs():
     print('Press Enter to exit to the menu\n')
 
-    url = "http://localhost:5000/api/get/welfare_programs"
+    url = API_BASE_URL + "/api/get/welfare_programs"
     response = requests.request("GET", url, headers=head)
    
     welfares = json.loads(response.text)
@@ -147,11 +143,11 @@ def view_welfare_programs():
 def view_submitted_applications():
 
     url = API_BASE_URL + "/api/applicant/view_applications"
-    print(user_token)
     payload = json.dumps({"username": g_user_name,"token": user_token})
     response = requests.request("POST", url, headers=head, data=payload)
-    print(type(response.text))
-    print(response.text)
+    applications = json.loads(response.text)
+    print(type(applications["data"]))
+    
 
 def submit_new_application():
     appName = ''
