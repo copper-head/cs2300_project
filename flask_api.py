@@ -268,7 +268,7 @@ def staff_view_application():
     return json.dumps({"TYPE":"ApplicationViewSuccess","MESSAGE":"Application Pulled Successfully.","data":app_data[0]})
 
 @app.route("/api/staff/view_unreviewed_applications", methods=['POST'])
-def staff_view_application():
+def staff_view_all_applications():
 
     username = request.json["username"]
     token = request.json["token"]
