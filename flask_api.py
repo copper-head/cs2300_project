@@ -309,7 +309,26 @@ def get_welfare_programs():
     ### FETCH DATA ###
     conn = sq.connect(DB_FILE)
     curs = conn.cursor()
-    prog_q = curs.execute("SELECT * FROM welfare_programs")
+    prog_q = curs.execute("SELECT name, plan_type FROM welfare_programs")
+    progs = prog_q.fetchall()
+    conn.close()
+
+    # Encapsulate data and send.
+    payload = {
+        "type":"Success",
+        "message":"Success",
+        "payload": progs
+    }
+
+    return json.dumps(payload)
+
+@app.route('/api/get/welfare_program_names')
+def get_program_names():
+    
+    ### FETCH DATA ###
+    conn = sq.connect(DB_FILE)
+    curs = conn.cursor()
+    prog_q = curs.execute("SELECT name FROM welfare_programs")
     progs = prog_q.fetchall()
     conn.close()
 
@@ -321,6 +340,7 @@ def get_welfare_programs():
     }
 
     return json.dumps(payload)
+
 
 ### ================ DEMONSTRATION CALLS ================ ###
 #
@@ -368,7 +388,6 @@ def create_staff_user():
     conn.close()
 
     return json.dumps({"TYPE":"AccountCreated", "MESSAGE":"Account creation successful."})
-
 
 
 
