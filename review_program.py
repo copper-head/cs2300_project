@@ -47,7 +47,7 @@ def reviewMenu():
         if staff_input == "1":
             reviewApplication()
         elif staff_input == "2":
-            print("Implement Me")
+            viewApplicationList()
         elif staff_input == "3":
             print("GOODBYE!")
             exit()
@@ -101,7 +101,7 @@ def reviewApplication():
         else:
             print("Invalid Input")
 
-    url = "http://localhost:5000/api/staff/submit_app_review"
+    url =  API_BASE_URL + "/api/staff/submit_app_review"
 
     payload = json.dumps({
     "username": "BIG_BOY",
@@ -114,6 +114,24 @@ def reviewApplication():
     }
     response = requests.request("POST", url, headers=headers, data=payload)
     print("Application Review Submitted")
+
+
+def viewApplicationList():
+    #view list of unreviewed applications
+    print("List of unreviewed applications: ")
+    
+    url = API_BASE_URL + "/api/staff/view_unreviewed_applications"
+
+    payload = json.dumps({
+    "username": "BIG_BOY",
+    "token": "34a9571c72be8646537b04b30f2c6ce83fcf6eb88d66c1dcc137afd066b88984"
+    })
+    headers = {
+    'Content-Type': 'application/json'
+    }
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    print(response.text)
 
 
 if __name__ == '__main__':
