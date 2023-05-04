@@ -317,7 +317,7 @@ def get_welfare_programs():
     payload = {
         "type":"Success",
         "message":"Success",
-        "payload": str(progs)
+        "payload": progs
     }
 
     return json.dumps(payload)
