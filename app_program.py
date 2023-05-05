@@ -121,15 +121,11 @@ def main_menu():
         else:
             print("Invalid Input")
 
-
-
-
             
-
 def view_welfare_programs():
     print('Press Enter to exit to the menu\n')
 
-    url = "http://localhost:5000/api/get/welfare_programs"
+    url = API_BASE_URL + "/api/get/welfare_programs"
     response = requests.request("GET", url, headers=head)
    
     welfares = json.loads(response.text)
@@ -145,23 +141,60 @@ def view_welfare_programs():
 
 
 def view_submitted_applications():
+    print('Press Enter to exit to the menu\n')
 
     url = API_BASE_URL + "/api/applicant/view_applications"
-    print(user_token)
     payload = json.dumps({"username": g_user_name,"token": user_token})
     response = requests.request("POST", url, headers=head, data=payload)
-    print(type(response.text))
-    print(response.text)
+    applications = json.loads(response.text)
+    
+    print("{:<30}".format("Date and Time Submitted")+"{:<30}".format("Welfare Submitted To")+"Review Status")
+    print("{:-<73}".format('-'))
+    for i in applications["data"]:
+        for j  in i:
+                print('{:<30}'.format(j), end='')
+        print()
+
+    input()
+    main_menu()
+    
 
 def submit_new_application():
     appName = ''
     valid = False
     while not valid:
-        appName = input("Choose a welfare program to apply for ('q' to quit): ")
-        #FIXME: check if appName is valid
-        #if valid, give confirmation message and exit
+        appName = input("Choose a valid welfare program to apply for ('q' to quit): ")
         if(appName == 'q'):
             valid = True
+            break
+        #Check for Validity application name
+        #Load all welfare plans, check the name for each one
+        url = API_BASE_URL + "/api/get/welfare_programs"
+        response = requests.request("GET", url, headers=head)
+        welfares = json.loads(response.text)
+        for i in welfares["payload"]:
+            if appName == i[0]:
+                #begin prompting for more info
+                print("\nYou have chosen to apply to the "+appName+" welfare program")
+                print("Please fill out the following prompts. Remember to press enter when you fill the field.")
+                income = input('Please state your income from all sources last year: ')
+                disabledStatus = int(input('Please type 1 if you have a disability, 0 otherwise: '))
+                score = int(input('Please state how many Reliability Points you have: '))
+                print('Thank you for submitting an application. Exiting to the menu...')
+        
+
+                url = API_BASE_URL + "/api/applicant/submit_application"
+                payload = json.dumps({
+                    "username": g_user_name,
+                    "token": user_token,
+                    "welfare_program": appName,
+                    "last_year_income": income,
+                    "has_disability": disabledStatus,
+                    "reliability_points": score
+                    })
+                headers = head
+                response = requests.request("POST", url, headers=head, data=payload) 
+                valid = True
     main_menu()
 
 if __name__ == '__main__':
