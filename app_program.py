@@ -141,14 +141,22 @@ def view_welfare_programs():
 
 
 def view_submitted_applications():
+    print('Press Enter to exit to the menu\n')
 
     url = API_BASE_URL + "/api/applicant/view_applications"
     payload = json.dumps({"username": g_user_name,"token": user_token})
     response = requests.request("POST", url, headers=head, data=payload)
     applications = json.loads(response.text)
-    print(applications["data"])
+    
+    print("{:<30}".format("Date and Time Submitted")+"{:<30}".format("Welfare Submitted To")+"Review Status")
+    print("{:-<73}".format('-'))
+    for i in applications["data"]:
+        for j  in i:
+                print('{:<30}'.format(j), end='')
+        print()
 
-    #print out
+    input()
+    main_menu()
     
 
 def submit_new_application():
@@ -179,15 +187,14 @@ def submit_new_application():
                 payload = json.dumps({
                     "username": g_user_name,
                     "token": user_token,
-                    "welfare_program": "GIMMIE SOME",
+                    "welfare_program": appName,
                     "last_year_income": income,
                     "has_disability": disabledStatus,
                     "reliability_points": score
                     })
                 headers = head
-                response = requests.request("POST", url, headers=head, data=payload)
-            else:
-                print('There are no applications with that name')  
+                response = requests.request("POST", url, headers=head, data=payload) 
+                valid = True
     main_menu()
 
 if __name__ == '__main__':
