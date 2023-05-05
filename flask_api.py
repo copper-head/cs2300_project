@@ -258,6 +258,9 @@ def staff_view_application():
     curs.execute("SELECT * FROM applications WHERE review_status='unreviewed' LIMIT 1")
     app_data = curs.fetchall()
 
+    curs.execute("SELECT first_name, last_name, birth_date FROM applicants WHERE id=(SELECT applicant_id FROM applications WHERE id=?)", (app_data[0][0],))
+    user_data = curs.fetchall()
+
     if len(app_data) == 0:
         return json.dumps({"TYPE":"ApplicationViewWarning","MESSAGE":"No applications to review."})
 
@@ -265,7 +268,7 @@ def staff_view_application():
     conn.commit()
     conn.close()
 
-    return json.dumps({"TYPE":"ApplicationViewSuccess","MESSAGE":"Application Pulled Successfully.","data":app_data[0]})
+    return json.dumps({"TYPE":"ApplicationViewSuccess","MESSAGE":"Application Pulled Successfully.","data":app_data[0], "user_data":user_data[0]})
 
 @app.route("/api/staff/view_unreviewed_applications", methods=['POST'])
 def staff_view_all_applications():
@@ -284,9 +287,6 @@ def staff_view_all_applications():
     curs.execute("SELECT * FROM applications WHERE review_status='unreviewed'")
     app_data = curs.fetchall()
 
-    if len(app_data) == 0:
-        return json.dumps({"TYPE":"ApplicationViewWarning","MESSAGE":"No applications to review."})
-
     conn.close()
 
     return json.dumps({"TYPE":"ApplicationViewSuccess","MESSAGE":"Applications Pulled Successfully.","data":app_data[0]})
@@ -298,7 +298,7 @@ def submit_app_review():
     username = request.json["username"]
     token = request.json["token"]
     application_id = request.json["application_id"]
-    is_accepted = request.json["is_accepted"]
+    new_status = request.json["new_status"]
 
     # Authenticate and throw an error if token is invalid.
     auth, message = staff_authenticate(username, token)
@@ -314,10 +314,7 @@ def submit_app_review():
     if len(app_data) == 0:
         return json.dumps({"TYPE":"ReviewSubmissionError","MESSAGE":"Id does not correspond to an open application."})
 
-    if is_accepted:
-        curs.execute("UPDATE applications SET review_status='accepted' WHERE id=?", (application_id,))
-    else:
-        curs.execute("UPDATE applications SET review_status='rejected' WHERE id=?", (application_id,))
+    curs.execute("UPDATE applications SET review_status=? WHERE id=?", (new_status, application_id,))
 
     conn.commit()
     conn.close()

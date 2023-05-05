@@ -59,61 +59,64 @@ def reviewApplication():
     url = "http://localhost:5000/api/staff/view_application"
 
     payload = json.dumps({
-    "username": "BIG_BOY",
-    "token": "34a9571c72be8646537b04b30f2c6ce83fcf6eb88d66c1dcc137afd066b88984"
+    "username": g_user_name,
+    "token": staff_token
     })
     headers = {
     'Content-Type': 'application/json'
     }
     response = requests.request("POST", url, headers=headers, data=payload)
+    response = json.loads(response.text)
     #response is in JSON
-
-    print("submission Date: " + response["Data"][2])
-    print("Welfare Program: " + response["Data"][3])
-    print("Yearly Income: " + response["Data"][4])
-    if response["Data"][5] == 0:
-        print("Has Disability: No")
+    if response["TYPE"] == "ApplicationViewWarning":
+        print("No applications to review")
     else:
-        print("Has Disability: Yes")
-    print("Reliability Points: " + response["Data"][6])
-    print()
-
-    decision = False
-    accepted = ""
-    while decision == False:
-        print("Choose an action:")
-        print("1 - Accept Application")
-        print("2 - Deny Application")
-        print("3 - Put Application back in to be reviewed")
-
-        staff_input = input()
+        print("submission Date: ", response["data"][2])
+        print("Welfare Program: ", response["data"][3])
+        print("Yearly Income: ", response["data"][4])
+        if response["data"][5] == 0:
+            print("Has Disability: No")
+        else:
+            print("Has Disability: Yes")
+        print("Reliability Points: ", response["data"][6])
         print()
 
-        if staff_input == "1":
-            decision = True
-            accepted = True
-        elif staff_input == "2":
-            decision = True
-            accepted = False
-        elif staff_input == "3":
-            decision = True
-            accepted = False #Not functional yet
-        else:
-            print("Invalid Input")
+        decision = False
+        accepted = ""
+        while decision == False:
+            print("Choose an action:")
+            print("1 - Accept Application")
+            print("2 - Deny Application")
+            print("3 - Put Application back in to be reviewed")
 
-    url =  API_BASE_URL + "/api/staff/submit_app_review"
+            staff_input = input()
+            print()
 
-    payload = json.dumps({
-    "username": "BIG_BOY",
-    "token": staff_token,
-    "application_id": response["Data"][2],
-    "is_accepted": accepted
-    })
-    headers = {
-    'Content-Type': 'application/json'
-    }
-    response = requests.request("POST", url, headers=headers, data=payload)
-    print("Application Review Submitted")
+            if staff_input == "1":
+                decision = True
+                accepted = True
+            elif staff_input == "2":
+                decision = True
+                accepted = False
+            elif staff_input == "3":
+                decision = True
+                accepted = False #Not functional yet
+            else:
+                print("Invalid Input")
+
+        url =  API_BASE_URL + "/api/staff/submit_app_review"
+
+        payload = json.dumps({
+        "username": g_user_name,
+        "token": staff_token,
+        "application_id": response["data"][2],
+        "is_accepted": accepted
+        })
+        headers = {
+        'Content-Type': 'application/json'
+        }
+        response = requests.request("POST", url, headers=headers, data=payload)
+        print("Application Review Submitted")
 
 
 def viewApplicationList():
@@ -123,8 +126,8 @@ def viewApplicationList():
     url = API_BASE_URL + "/api/staff/view_unreviewed_applications"
 
     payload = json.dumps({
-    "username": "BIG_BOY",
-    "token": "34a9571c72be8646537b04b30f2c6ce83fcf6eb88d66c1dcc137afd066b88984"
+    "username": g_user_name,
+    "token": staff_token
     })
     headers = {
     'Content-Type': 'application/json'
@@ -132,6 +135,8 @@ def viewApplicationList():
     response = requests.request("POST", url, headers=headers, data=payload)
 
     print(response.text)
+
+
 
 
 if __name__ == '__main__':
