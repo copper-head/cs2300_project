@@ -79,6 +79,9 @@ def reviewApplication():
         else:
             print("Has Disability: Yes")
         print("Reliability Points: ", response["data"][6])
+        print("First Name: ", response['user_data'][0])
+        print("Last Name: ", response['user_data'][1])
+        print("Date of Birth: ", response['user_data'][2])
         print()
 
         decision = False
@@ -133,8 +136,21 @@ def viewApplicationList():
     'Content-Type': 'application/json'
     }
     response = requests.request("POST", url, headers=headers, data=payload)
-
-    print(response.text)
+    applications = json.loads(response.text)
+    print("{:<20}".format('Date Submitted')
+          +"{:<20}".format('Welfare Program')
+          +"{:<20}".format('Last Year Income')
+          +"{:<20}".format('Disabled? 1=Y, 0=N')
+          +"{:<20}".format('Reliability Pts')
+          +"{:<20}".format('Review Status'))
+    print('{:-<115}'.format('-'))
+    for i in applications['data']:
+        for j in i[2:-1]:
+            print("{:<20}".format(str(j)), end='')
+        print()
+    
+    print()
+    reviewMenu()
 
 
 

@@ -289,7 +289,7 @@ def staff_view_all_applications():
 
     conn.close()
 
-    return json.dumps({"TYPE":"ApplicationViewSuccess","MESSAGE":"Applications Pulled Successfully.","data":app_data[0]})
+    return json.dumps({"TYPE":"ApplicationViewSuccess","MESSAGE":"Applications Pulled Successfully.","data":app_data})
 
 
 @app.route('/api/staff/submit_app_review', methods=['POST'])

@@ -92,7 +92,6 @@ def create_account():
 def main_menu():
     
     input_valid = False
-    exit = False
     while not input_valid:
 
         print("\nSelect an action: ")
@@ -128,8 +127,8 @@ def view_welfare_programs():
     response = requests.request("GET", url, headers=head)
    
     welfares = json.loads(response.text)
-    print('{:<20}'.format('Name')+'{:<20}'.format('Type') + 'Available Tiers')
-    print('{:-<55}'.format('-'))
+    print('{:<20}'.format('Name')+'{:<20}'.format('Type'))
+    print('{:-<40}'.format('-'))
     for i in welfares["payload"]:
         for j  in i:
                 print('{:<20}'.format(j), end='')
