@@ -93,7 +93,6 @@ def create_account():
 def main_menu():
     
     input_valid = False
-    exit = False
     while not input_valid:
 
         print("\nSelect an action: ")
@@ -147,7 +146,7 @@ def view_submitted_applications():
     payload = json.dumps({"username": g_user_name,"token": user_token})
     response = requests.request("POST", url, headers=head, data=payload)
     applications = json.loads(response.text)
-    
+
     print("{:<30}".format("Date and Time Submitted")+"{:<30}".format("Welfare Submitted To")+"Review Status")
     print("{:-<73}".format('-'))
     for i in applications["data"]:
