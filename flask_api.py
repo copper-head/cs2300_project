@@ -148,7 +148,7 @@ def post_welfare_app():
         request.json["reliability_points"]
     )
 
-    curs.execute("INSERT INTO applications(applicant_id, submission_date, ly_income, welfare_program, has_disability, reliability_points) VALUES(?,?,?,?,?,?)", values)
+    curs.execute("INSERT INTO applications(applicant_id, submission_date, welfare_program, ly_income, has_disability, reliability_points) VALUES(?,?,?,?,?,?)", values)
     conn.commit()
     conn.close()
 
