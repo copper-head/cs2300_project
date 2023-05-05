@@ -60,7 +60,6 @@ def create_account():
 
     while not input_valid:
 
-        ### ***************** ADD LOGIC TO MAKE IT TO WHERE THESE CANNOT BE BLANK AND ARE VALID ETC **************** ###
         username = input("username: ")
         password = input("password: ")
         first_name = input("First Name: ")
